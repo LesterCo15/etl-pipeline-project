@@ -1,0 +1,46 @@
+services:
+
+  postgres-demo-db:
+    image: postgres:17
+    container_name: postgres-demo
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  pgadmin-demo:
+    image: dpage/pgadmin4
+    container_name: pgadmin-demo
+    restart: on-failure
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8081:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
+  seaweedfs:
+    image: chrislusf/seaweedfs
+    container_name: seaweedfs
+    command: "server -dir=/data -s3 -s3.port=8334 -volume.max=5"
+    ports:
+      - "9333:9333"   # master UI
+      - "8080:8080"   # filer UI
+      - "8334:8334"   # S3 endpoint
+    volumes:
+      - seaweed_master:/data/master
+      - seaweed_volume:/data/volume
+      - seaweed_filer:/data/filer
+
+volumes:
+  db_data:
+  pgadmin_data:
+  seaweed_master:
+  seaweed_volume:
+  seaweed_filer:

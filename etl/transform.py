@@ -1,19 +1,4 @@
-import pandas as pd
 import requests
-import json
-import time
-import csv
-
-url = "https://pokeapi.co/api/v2/pokemon?limit="
-
-def extract(url: str, limit: int):
-  data = requests.get(f"{url}{limit}").json()
-  raw_data_list = []
-  for p in data['results']:
-    raw_data = requests.get(p['url']).json()
-    raw_data_list.append(raw_data)
-    time.sleep(0.6)
-  return raw_data_list
 
 def transform(data_list: list):
   pokemon_list = []
@@ -53,20 +38,6 @@ def transform(data_list: list):
 
     pokemon_list.append(pokemon_info)
     print(f"Fetched {pokemon_info['name']}")
-
+    
   print("\n Done! Collected", len(pokemon_list), "Pokemon.")
   return pokemon_list
-
-def load(data: list, csv_file: str):
-  with open(csv_file, "w", newline="") as file:
-    writer = csv.DictWriter(file, fieldnames=data[0].keys())
-    writer.writeheader()
-    writer.writerows(data)
-
-def main():
-  raw_data = extract(url, 100)
-  cleaned_data = transform(raw_data)
-  load(cleaned_data, "pokemon.csv")
-
-if __name__ == '__main__':
-  main()
