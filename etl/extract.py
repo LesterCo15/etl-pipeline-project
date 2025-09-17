@@ -1,9 +1,9 @@
 import requests
 import time
 
-def extract(url: str, limit: int):
+def extract(url):
   try:
-    response = requests.get(f"{url}{limit}")
+    response = requests.get(url)
     response.raise_for_status()
     response = response.json()
     print(f"Successfully accessed: {url}")
@@ -21,7 +21,3 @@ def extract(url: str, limit: int):
       print(f"An unexpected error occurred during the request to {url}: {e}")
 
   return []
-
-  
-
-
